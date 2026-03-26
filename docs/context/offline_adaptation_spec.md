@@ -2,7 +2,7 @@
 
 ## Objetivo
 
-Definir la versión offline mínima viable de Alvear sin depender de servicios cloud obligatorios.
+Definir la version offline minima viable de Alvear sin depender de servicios cloud obligatorios.
 
 ## Proveedor LLM
 
@@ -15,6 +15,8 @@ Definir la versión offline mínima viable de Alvear sin depender de servicios c
   - `LLM_API_KEY`
   - `LLM_BASE_URL`
   - `LLM_MODEL_NAME`
+  - `LLM_REQUEST_TIMEOUT_SECONDS`
+  - `LLM_MAX_RETRIES`
 
 ### Defaults actuales
 
@@ -22,10 +24,17 @@ Definir la versión offline mínima viable de Alvear sin depender de servicios c
 - `LLM_API_KEY=ollama`
 - `LLM_BASE_URL=http://localhost:11434/v1`
 - `LLM_MODEL_NAME=qwen2.5:14b`
+- `LLM_MAX_RETRIES=0`
+
+### Comportamiento esperado en local
+
+- el cliente no debe hacer reintentos silenciosos largos por defecto
+- si el modelo local no responde a tiempo, la CLI debe degradar con un fallback determinista
+- el fallback actual cubre ontologia, extraccion de chunks, perfiles y event planning
 
 ## Grafo
 
-### Contrato canónico
+### Contrato canonico
 
 `GraphStore` debe ofrecer:
 
@@ -38,26 +47,26 @@ Definir la versión offline mínima viable de Alvear sin depender de servicios c
 - `search_graph`
 - `append_simulation_memory`
 
-### Implementación v1
+### Implementacion v1
 
 `Neo4jGraphStore`
 
 Responsabilidades:
 
 - crear el nodo `Graph`
-- persistir ontología y metadata
+- persistir ontologia y metadata
 - persistir `DocumentChunk`
 - deduplicar entidades por `entity_type + name`
 - guardar relaciones tipadas como `RELATES_TO` con propiedad `name`
-- soportar búsqueda `full-text` con fallback keyword
-- registrar memoria de simulación en nodos `SimulationMemory`
+- soportar busqueda `full-text` con fallback keyword
+- registrar memoria de simulacion en nodos `SimulationMemory`
 
-## Construcción de grafo
+## Construccion de grafo
 
 ### Input
 
 - chunks de texto
-- ontología
+- ontologia
 - metadata de proyecto
 
 ### Output
@@ -69,10 +78,11 @@ Responsabilidades:
 
 ### Estrategia v1
 
-- extracción por chunk con LLM
+- extraccion por chunk con LLM si responde dentro del timeout
 - JSON estricto
-- deduplicación por clave normalizada
+- deduplicacion por clave normalizada
 - sin embeddings en v1
+- fallback heuristico si la ruta LLM falla
 
 ## Lectura de entidades
 
@@ -83,11 +93,11 @@ Responsabilidades:
 - listar entidades desde `Neo4jGraphStore`
 - enriquecer con relaciones y nodos cercanos
 - filtrar por tipos definidos
-- limitar el número de agentes en preparación
+- limitar el numero de agentes en preparacion
 
-## Preparación de simulación
+## Preparacion de simulacion
 
-Artefactos obligatorios por simulación:
+Artefactos obligatorios por simulacion:
 
 - `state.json`
 - `entities_snapshot.json`
@@ -95,7 +105,13 @@ Artefactos obligatorios por simulación:
 - `reddit_profiles.json`
 - `twitter_profiles.csv`
 
-## Ejecución
+Comportamiento v1:
+
+- perfiles LLM opcionales
+- fallback rule-based tras el primer fallo de perfil si el LLM local va lento
+- `prepare --no-llm-profiles` es la ruta recomendada para smoke tests locales
+
+## Ejecucion
 
 Se mantienen los runners heredados:
 
@@ -106,10 +122,11 @@ Se mantienen los runners heredados:
 Precondiciones:
 
 - dependencias OASIS/CAMEL instaladas
-- configuración LLM accesible
-- directorio de simulación preparado
+- para la ruta OASIS actual, usar `Python 3.10-3.12`
+- configuracion LLM accesible
+- directorio de simulacion preparado
 
-Artefactos esperados de ejecución:
+Artefactos esperados de ejecucion:
 
 - `run_state.json`
 - `simulation.log`
@@ -117,13 +134,36 @@ Artefactos esperados de ejecución:
 - `reddit/actions.jsonl`
 - SQLite por plataforma
 
-## Resumen
+## Reconciliacion de estado
 
-`SummaryGenerator` genera `summary.md` a partir de:
+`SimulationOutputService` es la capa offline de auditoria de artefactos.
 
-- `simulation_config.json`
-- `run_state.json`
-- logs JSONL de acciones
+Responsabilidades:
+
+- leer `simulation_config.json`, `state.json`, `run_state.json` y `actions.jsonl`
+- separar acciones reales de eventos tecnicos
+- inferir el estado final del run a partir de los logs si el monitor original dejo `run_state.json` obsoleto
+- sincronizar `state.json` con el estado reconciliado
+
+Comportamiento v1:
+
+- `inspect --simulation-id ...` dispara reconciliacion y persiste el resultado
+- `summarize --simulation-id ...` usa esa misma capa antes de redactar el informe
+
+## Reporting
+
+Artefactos de salida humana:
+
+- `summary.md`
+- `report.json`
+- `report.md`
+
+Comportamiento v1:
+
+- `summary.md` es una vista corta
+- `report.json` es la fuente estructurada para trazabilidad y futuras capas
+- `report.md` es la primera capa ejecutiva legible por humanos
+- el informe actual es heuristico y se apoya en acciones reales, hot topics, perfiles y estado reconciliado
 
 ## Scope v1
 
@@ -131,12 +171,16 @@ Incluido:
 
 - backend offline
 - CLI
-- seed canónico
+- seed canonico
 - quickstart local
+- fallback determinista para smoke tests
+- reconciliacion de estado desde artefactos
+- primera capa de informe humano
 
 Pospuesto:
 
 - API HTTP estable
 - UI
-- búsqueda vectorial
-- reportes avanzados narrativos
+- busqueda vectorial
+- reportes HTML o visualizaciones avanzadas
+- capa narrativa profunda basada en entrevistas o analisis semantico mas rico

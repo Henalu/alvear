@@ -1,4 +1,5 @@
 .venv/
+.venv311/
 __pycache__/
 *.pyc
 *.pyo
@@ -8,6 +9,8 @@ __pycache__/
 
 backend/uploads/
 backend/logs/
+*.egg-info/
+log/
 
 *.db
 *.sqlite

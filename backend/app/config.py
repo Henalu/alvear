@@ -50,6 +50,7 @@ class Config:
     # Optional dedicated fast model for high-volume simulation runs.
     LLM_BOOST_MODEL_NAME = os.getenv("LLM_BOOST_MODEL_NAME", LLM_MODEL_NAME)
     LLM_REQUEST_TIMEOUT_SECONDS = int(os.getenv("LLM_REQUEST_TIMEOUT_SECONDS", "120"))
+    LLM_MAX_RETRIES = int(os.getenv("LLM_MAX_RETRIES", "0"))
 
     NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
     NEO4J_USERNAME = os.getenv("NEO4J_USERNAME", "neo4j")

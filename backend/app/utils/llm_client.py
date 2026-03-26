@@ -14,11 +14,13 @@ class LLMClient:
         base_url: Optional[str] = None,
         model: Optional[str] = None,
         timeout: Optional[int] = None,
+        max_retries: Optional[int] = None,
     ) -> None:
         self.api_key = api_key or Config.LLM_API_KEY or "ollama"
         self.base_url = base_url or Config.LLM_BASE_URL
         self.model = model or Config.LLM_MODEL_NAME
         self.timeout = timeout or Config.LLM_REQUEST_TIMEOUT_SECONDS
+        self.max_retries = Config.LLM_MAX_RETRIES if max_retries is None else max_retries
 
         try:
             from openai import OpenAI
@@ -29,6 +31,7 @@ class LLMClient:
             api_key=self.api_key,
             base_url=self.base_url,
             timeout=self.timeout,
+            max_retries=self.max_retries,
         )
 
     def chat(

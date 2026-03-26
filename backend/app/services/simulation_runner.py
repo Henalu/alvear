@@ -225,6 +225,16 @@ class SimulationRunner:
     
     # 图谱记忆更新配置
     _graph_memory_enabled: Dict[str, bool] = {}  # simulation_id -> enabled
+
+    @staticmethod
+    def _pid_is_alive(pid: Optional[int]) -> bool:
+        if not pid:
+            return False
+        try:
+            os.kill(pid, 0)
+        except OSError:
+            return False
+        return True
     
     @classmethod
     def get_run_state(cls, simulation_id: str) -> Optional[SimulationRunState]:
@@ -333,7 +343,12 @@ class SimulationRunner:
         # 检查是否已在运行
         existing = cls.get_run_state(simulation_id)
         if existing and existing.runner_status in [RunnerStatus.RUNNING, RunnerStatus.STARTING]:
-            raise ValueError(f"模拟已在运行中: {simulation_id}")
+            if cls._pid_is_alive(existing.process_pid):
+                raise ValueError(f"模拟已在运行中: {simulation_id}")
+            existing.runner_status = RunnerStatus.FAILED
+            existing.completed_at = datetime.now().isoformat()
+            existing.error = existing.error or "Recovered stale run state after runner process exited unexpectedly."
+            cls._save_run_state(existing)
         
         # 加载模拟配置
         sim_dir = os.path.join(cls.RUN_STATE_DIR, simulation_id)
@@ -1760,4 +1775,3 @@ class SimulationRunner:
             results = results[:limit]
         
         return results
-

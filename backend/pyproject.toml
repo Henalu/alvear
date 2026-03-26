@@ -19,8 +19,8 @@ dependencies = [
 
 [project.optional-dependencies]
 oasis = [
-  "camel-ai",
-  "oasis-ai",
+  "camel-ai==0.2.78; python_version < '3.13'",
+  "camel-oasis==0.2.5; python_version < '3.13'",
 ]
 
 [project.scripts]

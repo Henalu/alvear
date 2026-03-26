@@ -10,6 +10,7 @@ from app.models.project import Project, ProjectManager, ProjectStatus
 from app.services.graph_builder import GraphBuilderService
 from app.services.neo4j_store import Neo4jGraphStore
 from app.services.ontology_generator import OntologyGenerator
+from app.services.simulation_output_service import SimulationOutputService
 from app.services.simulation_manager import SimulationManager
 from app.services.simulation_runner import SimulationRunner
 from app.services.summary_generator import SummaryGenerator
@@ -194,12 +195,12 @@ def cmd_inspect(args: argparse.Namespace) -> None:
         state = manager.get_simulation(args.simulation_id)
         if not state:
             raise ValueError(f"Simulation not found: {args.simulation_id}")
+        simulation_dir = Path(Config.BACKEND_DIR) / "uploads" / "simulations" / args.simulation_id
+        snapshot = SimulationOutputService().reconcile_and_collect(str(simulation_dir))
         payload = {
-            "state": state.to_dict(),
+            "state": snapshot["state"],
             "config": manager.get_simulation_config(args.simulation_id),
-            "run_state": SimulationRunner.get_run_state(args.simulation_id).to_detail_dict()
-            if SimulationRunner.get_run_state(args.simulation_id)
-            else None,
+            "run_state": snapshot["run_state"],
         }
         _print_json(payload)
         return
@@ -255,7 +256,10 @@ def build_parser() -> argparse.ArgumentParser:
     run_parser.add_argument("--graph-id")
     run_parser.set_defaults(func=cmd_run)
 
-    summarize_parser = subparsers.add_parser("summarize", help="Generate summary.md from simulation artifacts")
+    summarize_parser = subparsers.add_parser(
+        "summarize",
+        help="Generate summary.md, report.md and report.json from simulation artifacts",
+    )
     summarize_parser.add_argument("--simulation-id", required=True)
     summarize_parser.set_defaults(func=cmd_summarize)
 

@@ -440,6 +440,9 @@ class RedditSimulationRunner:
         - LLM_BASE_URL: API基础URL
         - LLM_MODEL_NAME: 模型名称
         """
+        default_local_base_url = "http://localhost:11434/v1"
+        llm_provider = os.environ.get("LLM_PROVIDER", "ollama").lower()
+
         # 优先从 .env 读取配置
         llm_api_key = os.environ.get("LLM_API_KEY", "")
         llm_base_url = os.environ.get("LLM_BASE_URL", "")
@@ -448,7 +451,15 @@ class RedditSimulationRunner:
         # 如果 .env 中没有，则使用 config 作为备用
         if not llm_model:
             llm_model = self.config.get("llm_model", "gpt-4o-mini")
-        
+        if not llm_base_url:
+            llm_base_url = self.config.get("llm_base_url", "")
+        if not llm_base_url and llm_provider == "ollama":
+            llm_base_url = default_local_base_url
+        if not llm_api_key and llm_provider == "ollama":
+            llm_api_key = "ollama"
+        if not llm_api_key and "localhost:11434" in llm_base_url:
+            llm_api_key = "ollama"
+
         # 设置 camel-ai 所需的环境变量
         if llm_api_key:
             os.environ["OPENAI_API_KEY"] = llm_api_key
@@ -766,4 +777,3 @@ if __name__ == "__main__":
         pass
     finally:
         print("模拟进程已退出")
-

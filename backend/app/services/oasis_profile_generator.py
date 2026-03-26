@@ -128,11 +128,15 @@ class OasisProfileGenerator:
 
         profiles: List[OasisAgentProfile] = []
         total = len(entities)
+        llm_enabled = use_llm
         for index, entity in enumerate(entities):
             try:
-                profile = self.generate_profile_from_entity(entity, user_id=index, use_llm=use_llm)
+                profile = self.generate_profile_from_entity(entity, user_id=index, use_llm=llm_enabled)
             except Exception as exc:
                 logger.warning("profile generation failed for %s: %s", entity.name, exc)
+                if llm_enabled:
+                    logger.warning("disabling LLM profile generation for remaining entities after first failure")
+                    llm_enabled = False
                 fallback = self._generate_profile_rule_based(entity)
                 profile = OasisAgentProfile(
                     user_id=index,

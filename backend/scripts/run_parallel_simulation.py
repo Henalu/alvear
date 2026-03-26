@@ -995,6 +995,9 @@ def create_model(config: Dict[str, Any], use_boost: bool = False):
         config: 模拟配置字典
         use_boost: 是否使用加速 LLM 配置（如果可用）
     """
+    default_local_base_url = "http://localhost:11434/v1"
+    llm_provider = os.environ.get("LLM_PROVIDER", "ollama").lower()
+
     # 检查是否有加速配置
     boost_api_key = os.environ.get("LLM_BOOST_API_KEY", "")
     boost_base_url = os.environ.get("LLM_BOOST_BASE_URL", "")
@@ -1014,11 +1017,21 @@ def create_model(config: Dict[str, Any], use_boost: bool = False):
         llm_base_url = os.environ.get("LLM_BASE_URL", "")
         llm_model = os.environ.get("LLM_MODEL_NAME", "")
         config_label = "[通用LLM]"
-    
+
     # 如果 .env 中没有模型名，则使用 config 作为备用
     if not llm_model:
         llm_model = config.get("llm_model", "gpt-4o-mini")
-    
+
+    if not llm_base_url:
+        llm_base_url = config.get("llm_base_url", "")
+    if not llm_base_url and llm_provider == "ollama":
+        llm_base_url = default_local_base_url
+
+    if not llm_api_key and llm_provider == "ollama":
+        llm_api_key = "ollama"
+    if not llm_api_key and "localhost:11434" in llm_base_url:
+        llm_api_key = "ollama"
+
     # 设置 camel-ai 所需的环境变量
     if llm_api_key:
         os.environ["OPENAI_API_KEY"] = llm_api_key
