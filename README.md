@@ -9,6 +9,8 @@ Alvear es una capa `offline-first` sobre la idea de MiroFish para ensayar reacci
 - El flujo operativo validado es `ingest -> build-graph -> prepare -> run -> summarize`.
 - `summarize` ya no solo escribe `summary.md`: ahora genera `report.json`, `report.md` y reconcilia `run_state.json` y `state.json` desde los artefactos reales de la simulacion.
 - La ruta de simulacion completa sigue dependiendo de OASIS/CAMEL y hoy la ruta estable es un entorno `Python 3.11` o `3.12`.
+- Ya existe una corrida larga validada de 12 rondas en `.venv311` con `qwen2.5:3b`: `sim_67b05449cbd4`.
+- Esa corrida completa genero 10 acciones reales, cerro en `completed` y produjo `summary.md`, `report.json` y `report.md`.
 
 ## Quickstart
 
@@ -90,6 +92,8 @@ Entregables humanos:
 - Para simulacion local rapida en CPU, `qwen2.5:3b` es hoy el modelo practico validado.
 - `inspect --simulation-id ...` y `summarize --simulation-id ...` ahora reparan `run_state.json` y `state.json` usando los logs reales si quedaron obsoletos.
 - El reporte humano distingue entre rondas planificadas y rondas realmente ejecutadas para no sobreinterpretar corridas truncadas.
+- La validacion larga de 12 rondas ya funciona, pero el runner todavia muestra `APITimeoutError` intermitentes y la muestra resultante puede quedarse corta para conclusiones fuertes.
+- Un `report.md` con menos de 20 acciones debe leerse como entregable exploratorio, no como lectura definitiva de mercado.
 
 ## Estructura
 
@@ -110,5 +114,6 @@ Entregables humanos:
 
 - No hay UI re-integrada todavia.
 - `run` completo sigue dependiendo de OASIS/CAMEL y de un Python compatible.
-- La ruta larga de 12 rondas todavia no esta cerrada como validacion estable de extremo a extremo.
+- La ruta larga de 12 rondas ya fue validada una vez de extremo a extremo, pero aun no esta cerrada como ruta estable y repetible.
 - El informe humano actual es heuristico y esta pensado para entregar una primera lectura ejecutiva, no como analisis final de alta fidelidad.
+- La calidad del entregable sigue condicionada por dos factores: volumen real de acciones y limpieza textual de los logs generados por el runner.

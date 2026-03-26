@@ -78,3 +78,14 @@ Registro append-only de decisiones de arquitectura y enfoque.
 - El informe debe distinguir entre rondas planificadas y rondas realmente ejecutadas.
 - La capa de redaccion debe deduplicar evidencias repetidas cuando varios logs repiten el mismo texto.
 - Si hay conflicto entre la narrativa y los artefactos operativos, mandan los artefactos reconciliados.
+
+### D-015: baseline operativo validado para corridas largas locales
+
+- La primera validacion real de 12 rondas se fija sobre `.venv311` con `qwen2.5:3b`.
+- Mientras no se endurezca el runner, esta combinacion es el baseline canonicamente valido para `run` largo en CPU local.
+- `qwen2.5:14b` queda como opcion de calidad o pruebas puntuales, no como baseline operativo de esta maquina.
+
+### D-016: el entregable humano debe ser explicito sobre la calidad de la muestra
+
+- Si una corrida genera menos de 20 acciones reales, el reporte debe tratarse como `small` y comunicarse como lectura exploratoria.
+- No se deben presentar conclusiones fuertes de mercado cuando la muestra observada sigue siendo pequena o muy sesgada por plataforma.

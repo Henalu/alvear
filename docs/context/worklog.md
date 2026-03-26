@@ -35,12 +35,15 @@ El repo ya tiene una base operativa de Alvear offline:
 - `inspect --simulation-id sim_c95136e52da8` ahora reconcilia `run_state.json` y `state.json`
 - `summarize --simulation-id sim_c95136e52da8` ahora genera `summary.md`, `report.json` y `report.md`
 - pasada de deuda tecnica hecha sobre la capa nueva de reporting antes de la corrida larga
+- `run_parallel_simulation.py` validado tambien a 12 rondas con `qwen2.5:3b` en `.venv311`
+- `inspect --simulation-id sim_67b05449cbd4` y `summarize --simulation-id sim_67b05449cbd4` ejecutados con exito
 
 IDs de referencia del smoke actual:
 
 - `project_id`: `proj_054ebe5a3387`
 - `graph_id`: `graph_089846d74ba3`
 - `simulation_id`: `sim_c95136e52da8`
+- `simulation_id` corrida larga: `sim_67b05449cbd4`
 
 Artefactos reales de ejecucion ya observados:
 
@@ -53,24 +56,33 @@ Artefactos reales de ejecucion ya observados:
 - `backend/uploads/simulations/sim_c95136e52da8/summary.md`
 - `backend/uploads/simulations/sim_c95136e52da8/report.json`
 - `backend/uploads/simulations/sim_c95136e52da8/report.md`
+- `backend/uploads/simulations/sim_67b05449cbd4/twitter/actions.jsonl`
+- `backend/uploads/simulations/sim_67b05449cbd4/reddit/actions.jsonl`
+- `backend/uploads/simulations/sim_67b05449cbd4/run_state.json`
+- `backend/uploads/simulations/sim_67b05449cbd4/state.json`
+- `backend/uploads/simulations/sim_67b05449cbd4/summary.md`
+- `backend/uploads/simulations/sim_67b05449cbd4/report.json`
+- `backend/uploads/simulations/sim_67b05449cbd4/report.md`
 
 ## Verificacion pendiente
 
-- ejecucion completa de `run` a 12 rondas
-- comprobar como se comporta el informe humano con una simulacion mas rica en interacciones, no solo con 2 posts semilla
-- decidir si `qwen2.5:3b` pasa a ser el modelo rapido recomendado por defecto para simulacion local
+- repetir la corrida de 12 rondas para medir estabilidad, no solo exito puntual
+- mejorar la riqueza de interacciones para salir de la banda `small` del reporte
+- decidir si `qwen2.5:3b` pasa de baseline validado a default operativo de simulacion local
+- reducir la frecuencia de timeouts parciales durante `run`
 
 ## Siguiente accion recomendada
 
-1. Ejecutar una corrida de 12 rondas con `qwen2.5:3b` en `.venv311`.
-2. Evaluar el `report.json` y `report.md` resultantes para decidir si hace falta una segunda capa de sintesis o entrevistas.
-3. Solo despues de eso, decidir si conviene promocionar `qwen2.5:3b` a default operativo para simulacion local.
+1. Endurecer `run` frente a `APITimeoutError` intermitentes para que la corrida larga sea repetible.
+2. Mejorar la limpieza textual del output para que `report.md` sea mas legible sin tener que interpretar ruido de logs.
+3. Repetir una corrida de 12 rondas y comprobar si el reporte supera la banda `small` de muestra.
 
 ## Bloqueos conocidos
 
 - `run` sigue dependiendo de OASIS/CAMEL y de un Python compatible
 - `qwen2.5:14b` en CPU local agota el timeout para ontologia y para event planning en esta maquina
 - el informe humano ya existe, pero su calidad sigue ligada al volumen y riqueza de acciones capturadas
+- la corrida larga ya termina, pero sigue sufriendo timeouts parciales del cliente LLM
 - la CLI ya reconcilia estado al auditar, pero no hay todavia un monitor persistente externo al runner para runs largos
 
 ## Notas operativas
@@ -79,11 +91,14 @@ Artefactos reales de ejecucion ya observados:
 - `build-graph` ya no se queda colgado: si falla el LLM, genera una ontologia y una extraccion por reglas
 - `prepare` puede completarse de forma fiable con `--no-llm-profiles`
 - la primera ejecucion real de simulacion ya salio con `Python 3.11` y `qwen2.5:3b`
+- la corrida larga de referencia (`sim_67b05449cbd4`) completo 12 rondas y cerro en `completed`
+- esa corrida larga produjo 10 acciones reales: 8 en Twitter y 2 en Reddit
 - el informe humano actual separa dato (`report.json`) y redaccion (`report.md`)
 - el informe ya distingue rondas planificadas frente a rondas ejecutadas y evita repetir la misma evidencia textual
+- una muestra de 10 acciones sigue siendo util para orientacion ejecutiva, pero no para conclusiones firmes
 
 ## Criterio para cerrar la siguiente iteracion
 
 La proxima iteracion deberia terminar con esta meta:
 
-- `run` estable de 12 rondas con artefactos completos y un `report.md` util para lectura humana
+- `run` repetible de 12 rondas con menos timeouts, mas de 20 acciones reales y un `report.md` claramente legible para humanos

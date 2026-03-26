@@ -31,6 +31,7 @@ Definir la version offline minima viable de Alvear sin depender de servicios clo
 - el cliente no debe hacer reintentos silenciosos largos por defecto
 - si el modelo local no responde a tiempo, la CLI debe degradar con un fallback determinista
 - el fallback actual cubre ontologia, extraccion de chunks, perfiles y event planning
+- para `run` largo en CPU local, el baseline validado hoy es `qwen2.5:3b` en `.venv311`
 
 ## Grafo
 
@@ -126,6 +127,13 @@ Precondiciones:
 - configuracion LLM accesible
 - directorio de simulacion preparado
 
+Baseline observado en este workspace:
+
+- `.venv311` con `Python 3.11`
+- `qwen2.5:3b`
+- corrida validada de referencia: 12 rondas, `sim_67b05449cbd4`
+- el runner puede completar la corrida, pero todavia muestra `APITimeoutError` intermitentes
+
 Artefactos esperados de ejecucion:
 
 - `run_state.json`
@@ -164,6 +172,8 @@ Comportamiento v1:
 - `report.json` es la fuente estructurada para trazabilidad y futuras capas
 - `report.md` es la primera capa ejecutiva legible por humanos
 - el informe actual es heuristico y se apoya en acciones reales, hot topics, perfiles y estado reconciliado
+- el informe debe expresar el tamano real de muestra y evitar sobreinterpretar corridas con menos de 20 acciones
+- una corrida completada no equivale automaticamente a una muestra rica; la calidad del entregable depende del volumen y diversidad de acciones
 
 ## Scope v1
 

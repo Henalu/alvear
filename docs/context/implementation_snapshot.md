@@ -108,6 +108,9 @@ Funciona ya:
 - `python -m alvear.cli summarize --simulation-id sim_c95136e52da8`
 - `py -3.11` en entorno dedicado `.venv311`
 - `backend/scripts/run_parallel_simulation.py --config ... --max-rounds 1 --no-wait` con `qwen2.5:3b`
+- `backend/scripts/run_parallel_simulation.py --config ... --max-rounds 12 --no-wait` con `qwen2.5:3b`
+- `python -m alvear.cli inspect --simulation-id sim_67b05449cbd4`
+- `python -m alvear.cli summarize --simulation-id sim_67b05449cbd4`
 
 Resultados reales:
 
@@ -116,16 +119,21 @@ Resultados reales:
 - simulacion preparada: `sim_c95136e52da8`
 - entidades utiles preparadas: 8
 - primer run real validado: paralelo, 1 ronda, `qwen2.5:3b`
+- corrida larga validada: `sim_67b05449cbd4`, paralelo, 12 rondas, `qwen2.5:3b`
+- duracion observada de la corrida larga: ~44 minutos en esta maquina
+- acciones reales en corrida larga: 10 totales, 8 en Twitter y 2 en Reddit
 - acciones reales generadas en `twitter/actions.jsonl` y `reddit/actions.jsonl`
 - `run_state.json` reconciliado a `completed`
 - `state.json` reconciliado a `completed`
 - `report.json` y `report.md` generados a partir de acciones reales
 - el informe distingue rondas planificadas vs rondas ejecutadas y deduplica evidencias repetidas
+- la corrida larga confirma que el informe humano gana utilidad, pero sigue teniendo muestra pequena y sesgo hacia Twitter
 
 ## No verificado todavia en este workspace
 
-- un `run` completo de 12 rondas
-- una validacion larga de la calidad del informe humano con una muestra de conversacion mas rica
+- repetibilidad de corridas largas de 12 rondas en esta misma maquina
+- mejora de calidad narrativa cuando la muestra supera 20 acciones reales
+- estabilizacion del runner frente a timeouts intermitentes durante la corrida larga
 
 ## Runtime observado hoy en este workspace
 
@@ -139,6 +147,7 @@ Resultados reales:
 - Ollama tambien tiene `qwen2.5:3b` para pruebas mas rapidas de simulacion
 - `LLM_MAX_RETRIES=0` evita esperas acumuladas por reintentos silenciosos
 - existe un entorno dedicado `Python 3.11` en `.venv311` con OASIS/CAMEL instalado
+- una corrida de 12 rondas con `qwen2.5:3b` completa, pero acumula `APITimeoutError` intermitentes en llamadas al LLM durante el run
 
 ## Artefactos de runtime esperados
 
@@ -165,7 +174,9 @@ Resultados reales:
 ## Riesgos tecnicos activos
 
 - el runner heredado sigue siendo la parte mas fragil del stack por dependencia externa
-- `run` ya puede ejecutarse en `.venv311`, pero la ruta larga de 12 rondas sigue sin validarse
+- `run` ya puede ejecutarse en `.venv311` y la ruta larga de 12 rondas ya quedo validada una vez, pero todavia no esta endurecida
 - `qwen2.5:14b` en CPU local supera con frecuencia el timeout de ontologia y de event planning
 - la degradacion determinista evita bloqueos, pero no sustituye una validacion LLM real con un modelo mas rapido o una maquina con GPU
 - el informe humano actual es una capa heuristica sobre los logs, todavia no una capa narrativa basada en entrevistas o analisis profundo
+- la corrida larga observada genero solo 10 acciones reales, lo que limita la confianza del entregable
+- los logs del runner todavia pueden arrastrar texto ruidoso o mal normalizado que empobrece `report.md`
