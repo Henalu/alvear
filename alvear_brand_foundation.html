@@ -1,0 +1,470 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .doc {
+    font-family: 'DM Sans', sans-serif;
+    color: var(--color-text-primary);
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  .brand-mark {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 3rem;
+  }
+
+  .hex {
+    width: 36px;
+    height: 36px;
+  }
+
+  .brand-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    letter-spacing: 0.04em;
+    color: var(--color-text-primary);
+  }
+
+  .brand-tagline {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 300;
+  }
+
+  .chapter-label {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #BA7517;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  .chapter-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    color: var(--color-text-primary);
+  }
+
+  .section {
+    margin-bottom: 3.5rem;
+  }
+
+  .divider {
+    border: none;
+    border-top: 0.5px solid var(--color-border-tertiary);
+    margin: 2.5rem 0;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 1.25rem;
+  }
+
+  .card {
+    background: var(--color-background-secondary);
+    border-radius: 12px;
+    padding: 1.25rem;
+  }
+
+  .card-icon {
+    font-size: 20px;
+    margin-bottom: 0.75rem;
+    display: block;
+  }
+
+  .card-title {
+    font-weight: 500;
+    font-size: 15px;
+    margin-bottom: 0.4rem;
+    color: var(--color-text-primary);
+  }
+
+  .card-body {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+
+  .big-quote {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    line-height: 1.5;
+    color: var(--color-text-primary);
+    border-left: 2px solid #EF9F27;
+    padding-left: 1.25rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+  }
+
+  .value-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 1rem 0;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+  }
+
+  .value-row:last-child { border-bottom: none; }
+
+  .value-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: #EF9F27;
+    line-height: 1;
+    min-width: 32px;
+    opacity: 0.6;
+  }
+
+  .value-content { flex: 1; }
+
+  .value-title {
+    font-weight: 500;
+    font-size: 15px;
+    margin-bottom: 0.25rem;
+    color: var(--color-text-primary);
+  }
+
+  .value-desc {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+
+  .tone-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 1rem;
+  }
+
+  .tone-yes {
+    background: #EAF3DE;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+  }
+
+  .tone-no {
+    background: #FCEBEB;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+  }
+
+  .tone-label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  .tone-yes .tone-label { color: #3B6D11; }
+  .tone-no .tone-label { color: #A32D2D; }
+
+  .tone-item {
+    font-size: 13px;
+    line-height: 1.8;
+  }
+
+  .tone-yes .tone-item { color: #27500A; }
+  .tone-no .tone-item { color: #791F1F; }
+
+  .persona-block {
+    background: var(--color-background-secondary);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+  }
+
+  .persona-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    margin-bottom: 0.25rem;
+  }
+
+  .persona-sub {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    margin-bottom: 1rem;
+  }
+
+  .trait-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 1rem;
+  }
+
+  .pill {
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 99px;
+    background: #FAEEDA;
+    color: #633806;
+    font-weight: 500;
+  }
+
+  .narrative-block {
+    margin-top: 1rem;
+  }
+
+  .narrative-p {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--color-text-secondary);
+    margin-bottom: 1rem;
+  }
+
+  .narrative-p strong {
+    color: var(--color-text-primary);
+    font-weight: 500;
+  }
+
+  .copy-example {
+    background: var(--color-background-secondary);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 0.5rem 0;
+    font-size: 14px;
+    color: var(--color-text-primary);
+    line-height: 1.7;
+    border-left: 3px solid #EF9F27;
+  }
+
+  .copy-context {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    margin-top: 1rem;
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+  }
+
+  .footer-line {
+    margin-top: 4rem;
+    padding-top: 1.5rem;
+    border-top: 0.5px solid var(--color-border-tertiary);
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .amber { color: #BA7517; }
+</style>
+
+<div class="doc">
+
+  <div class="brand-mark">
+    <svg class="hex" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M18 3L31.8 11V29L18 33L4.2 29V11L18 3Z" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1"/>
+      <path d="M18 9L26.4 14V23L18 27L9.6 23V14L18 9Z" fill="#EF9F27" opacity="0.4"/>
+      <circle cx="18" cy="18" r="3" fill="#EF9F27"/>
+    </svg>
+    <div>
+      <div class="brand-name">Alvear</div>
+      <div class="brand-tagline">Swarm Intelligence Engine</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="chapter-label">01 — Propósito</div>
+    <div class="chapter-title">Por qué existe Alvear</div>
+    <div class="big-quote">
+      "El futuro no es una incógnita. Es un ensayo que aún no hemos ejecutado."
+    </div>
+    <div class="narrative-block">
+      <p class="narrative-p">Las organizaciones toman decisiones importantes con información incompleta. Hacen encuestas, contratan consultores, analizan datos históricos. Y aun así, se equivocan. No porque sean incompetentes, sino porque <strong>predecir comportamiento colectivo humano con métodos lineales es como intentar predecir el clima mirando solo la temperatura de ayer.</strong></p>
+      <p class="narrative-p">Alvear parte de una intuición diferente: <strong>el futuro ya existe en la dinámica de las personas</strong>. En cómo reaccionan entre sí. En cómo las opiniones viajan, mutan y se consolidan. Lo que hace Alvear es simularlo antes de que ocurra.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section">
+    <div class="chapter-label">02 — Visión</div>
+    <div class="chapter-title">A dónde vamos</div>
+    <div class="big-quote">
+      Un mundo donde las decisiones importantes se ensayan antes de ejecutarse.
+    </div>
+    <p class="narrative-p" style="margin-top:0.5rem;">No predicciones automáticas. No oráculos infalibles. Sino <strong>entornos donde explorar consecuencias</strong> antes de que sean irreversibles. Alvear quiere ser la herramienta con la que gobiernos, empresas y equipos creativos pregunten "¿qué pasaría si...?" y obtengan respuestas que merezcan la pena escuchar.</p>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section">
+    <div class="chapter-label">03 — Misión</div>
+    <div class="chapter-title">Lo que hacemos hoy</div>
+    <div class="big-quote">
+      Convertir miles de agentes de inteligencia artificial en un espejo del comportamiento humano colectivo, para que quien toma decisiones pueda ver el futuro antes de vivirlo.
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <span class="card-icon">⬡</span>
+        <div class="card-title">Simulamos, no predecimos</div>
+        <div class="card-body">Alvear no da respuestas definitivas. Da escenarios ricos, patrones emergentes y narrativas plausibles que ayudan a pensar mejor.</div>
+      </div>
+      <div class="card">
+        <span class="card-icon">⬡</span>
+        <div class="card-title">Colectivo, no individual</div>
+        <div class="card-body">El valor está en la inteligencia que emerge del sistema, no en ningún agente por sí solo. Como en un alvear real.</div>
+      </div>
+      <div class="card">
+        <span class="card-icon">⬡</span>
+        <div class="card-title">Accionable, no teórico</div>
+        <div class="card-body">Los informes de Alvear están pensados para personas que tienen que tomar decisiones reales, no para publicar papers.</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section">
+    <div class="chapter-label">04 — Valores</div>
+    <div class="chapter-title">En qué creemos</div>
+
+    <div class="value-row">
+      <div class="value-num">1</div>
+      <div class="value-content">
+        <div class="value-title">Honestidad radical sobre la incertidumbre</div>
+        <div class="value-desc">Alvear no pretende saber el futuro. Pretende explorar futuros posibles con honestidad. Si el modelo no sabe, lo dice. Si el resultado es ambiguo, lo muestra. No vendemos certeza, vendemos claridad.</div>
+      </div>
+    </div>
+
+    <div class="value-row">
+      <div class="value-num">2</div>
+      <div class="value-content">
+        <div class="value-title">Utilidad por encima de impresión</div>
+        <div class="value-desc">Un informe bonito que no ayuda a decidir nada vale menos que un análisis sencillo que cambia el curso de acción. El criterio de éxito de Alvear es si la persona que recibe el resultado toma mejores decisiones.</div>
+      </div>
+    </div>
+
+    <div class="value-row">
+      <div class="value-num">3</div>
+      <div class="value-content">
+        <div class="value-title">Acceso, no exclusividad</div>
+        <div class="value-desc">La inteligencia colectiva simulada no debería ser solo para los que pueden pagar a McKinsey. Alvear busca democratizar la capacidad de ensayar el futuro, empezando por organizaciones medianas y equipos independientes.</div>
+      </div>
+    </div>
+
+    <div class="value-row">
+      <div class="value-num">4</div>
+      <div class="value-content">
+        <div class="value-title">Curiosidad sin ego</div>
+        <div class="value-desc">Estamos en territorio nuevo. MiroFish es una herramienta joven, la simulación de comportamiento colectivo con LLMs es ciencia emergente. Lo que nos mueve es la curiosidad, no la arrogancia de creer que lo hemos resuelto todo.</div>
+      </div>
+    </div>
+
+    <div class="value-row">
+      <div class="value-num">5</div>
+      <div class="value-content">
+        <div class="value-title">Optimismo práctico</div>
+        <div class="value-desc">Creemos que las herramientas bien hechas mejoran las decisiones, y las mejores decisiones mejoran el mundo. No de forma grandilocuente, sino de forma concreta, un caso de uso a la vez.</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section">
+    <div class="chapter-label">05 — Carácter</div>
+    <div class="chapter-title">Quién es Alvear</div>
+
+    <div class="persona-block">
+      <div class="persona-name">El experto que no da miedo</div>
+      <div class="persona-sub">Si Alvear fuera una persona, sería alguien así.</div>
+      <div class="trait-pills">
+        <span class="pill">Directo</span>
+        <span class="pill">Curioso</span>
+        <span class="pill">Irónico con elegancia</span>
+        <span class="pill">Generoso</span>
+        <span class="pill">Sin pedantería</span>
+        <span class="pill">Optimista sin ingenuidad</span>
+      </div>
+      <p class="narrative-p" style="margin-bottom:0;">Sabe mucho pero no lo usa para impresionar. Explica cosas difíciles con palabras normales. Tiene sentido del humor, pero no lo usa para esquivar las preguntas difíciles. Es de esas personas con las que sales de una reunión pensando "esto sí me ha servido".</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section">
+    <div class="chapter-label">06 — Tono de voz</div>
+    <div class="chapter-title">Cómo habla Alvear</div>
+
+    <div class="tone-grid">
+      <div class="tone-yes">
+        <div class="tone-label">Sí</div>
+        <div class="tone-item">
+          Claro y sin tecnicismos innecesarios<br>
+          Directo, sin rodeos<br>
+          Con humor donde cabe<br>
+          Humilde sobre las limitaciones<br>
+          Concreto, con ejemplos reales<br>
+          Cálido sin ser empalagoso
+        </div>
+      </div>
+      <div class="tone-no">
+        <div class="tone-label">No</div>
+        <div class="tone-item">
+          Corporativo y genérico<br>
+          Grandilocuente o mesiánico<br>
+          Técnico por defecto<br>
+          Excesivamente formal<br>
+          Prometiendo más de lo que da<br>
+          Seco o distante
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:1.5rem;">
+      <div class="copy-context">Ejemplo — Hero de landing</div>
+      <div class="copy-example">
+        Miles de personas reaccionando ante tu decisión. Antes de tomarla.<br>
+        <span style="opacity:0.6">Alvear simula cómo se comporta el mundo cuando cambias algo en él.</span>
+      </div>
+
+      <div class="copy-context">Ejemplo — Descripción de producto</div>
+      <div class="copy-example">
+        No te decimos qué va a pasar. Te mostramos cómo podría reaccionar la gente. Que no es lo mismo, pero a veces es más útil.
+      </div>
+
+      <div class="copy-context">Ejemplo — Error / limitación</div>
+      <div class="copy-example">
+        Esta simulación tiene sus límites. Como todas. Úsala para pensar mejor, no para delegar la decisión.
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section">
+    <div class="chapter-label">07 — Narrativa fundacional</div>
+    <div class="chapter-title">La historia que contamos</div>
+    <div class="narrative-block">
+      <p class="narrative-p">Las mejores decisiones no se toman con más datos. Se toman con mejor comprensión de cómo las personas reaccionan ante lo que haces.</p>
+      <p class="narrative-p">Un alvear no tiene líder. No hay nadie dando órdenes. Y sin embargo, <strong>miles de abejas coordinan comportamientos increíblemente complejos</strong> — construyen, defienden, migran, sobreviven. La inteligencia está en el sistema, no en ninguna pieza por separado.</p>
+      <p class="narrative-p">Eso es exactamente lo que Alvear simula. No una opinión, sino <strong>miles de ellas interactuando</strong>. Y de esa interacción emerge algo que ninguna encuesta, ningún focus group y ningún modelo estadístico puede capturar: el comportamiento colectivo en movimiento.</p>
+      <p class="narrative-p">Somos una herramienta nueva para un problema antiguo. <strong>¿Qué pasará cuando hagamos esto?</strong> Ahora puedes ensayarlo antes.</p>
+    </div>
+  </div>
+
+  <div class="footer-line">
+    <span>Alvear — Brand Foundation v1.0</span>
+    <span class="amber">Documento vivo. Evoluciona con el producto.</span>
+  </div>
+
+</div>

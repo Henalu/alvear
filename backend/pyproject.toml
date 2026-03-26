@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "alvear-offline"
+version = "0.1.0"
+description = "Offline-first backend and CLI for Alvear."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "chardet>=5.2.0",
+  "charset-normalizer>=3.4.0",
+  "neo4j>=5.23.0",
+  "openai>=1.40.0",
+  "PyMuPDF>=1.24.0",
+  "python-dotenv>=1.0.1",
+]
+
+[project.optional-dependencies]
+oasis = [
+  "camel-ai",
+  "oasis-ai",
+]
+
+[project.scripts]
+alvear = "alvear.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["alvear*", "app*"]
